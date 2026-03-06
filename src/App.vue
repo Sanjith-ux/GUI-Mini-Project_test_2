@@ -98,32 +98,14 @@
           </ul>
         </nav>
 
-        <div v-if="currentPage === 'home'" class="glass fade-in grid gap-8 rounded-3xl p-8 sm:p-12 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-white/50">Featured</p>
-            <h2 class="mt-4 text-4xl font-semibold">iPhone 17 Pro Max</h2>
-            <p class="mt-4 text-base text-white/70">
-              The titanium evolution. Capture cinematic depth with a 48MP main sensor and a pro-grade
-              lens stack.
-            </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-              <button
-                class="rounded-full bg-citron px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-ink"
-                @click="goToCategory('iPhone')"
-              >
-                Explore iPhone
-              </button>
-              <button
-                class="rounded-full border border-white/20 px-6 py-3 text-sm uppercase tracking-[0.3em] text-white/70 transition hover:border-citron/80 hover:text-citron"
-                @click="goToCategory('Mac')"
-              >
-                Browse Products
-              </button>
-            </div>
-          </div>
-          <div class="flex items-center justify-center">
-            <img :src="iphone" alt="iPhone hero" class="h-80 w-80 rounded-3xl object-cover shadow-2xl" />
-          </div>
+        <div v-if="currentPage === 'home'" class="glass fade-in flex flex-col items-center gap-6 rounded-3xl p-10 sm:p-14">
+          <h2 class="text-3xl font-semibold uppercase tracking-[0.3em] text-orange-400">iPhone 17 Pro Max</h2>
+          <img
+            :key="currentPage"
+            :src="iphone"
+            alt="iPhone hero"
+            class="h-96 w-96 rounded-3xl object-cover shadow-2xl pop-in"
+          />
         </div>
 
         <div v-else class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
@@ -154,7 +136,7 @@
                 </div>
                 <p class="mt-3 text-sm text-white/60">{{ product.tagline }}</p>
                 <div class="mt-4 flex items-center justify-between">
-                  <span class="text-sm text-white/70">From {{ product.price }}</span>
+                  <span class="text-sm text-white/70">From {{ formatPrice(product.basePrice) }}</span>
                   <span class="text-xs uppercase tracking-[0.2em] text-citron">View</span>
                 </div>
               </article>
@@ -162,7 +144,7 @@
           </div>
 
           <aside class="glass rounded-3xl p-6 sm:p-8">
-            <div v-if="selected" class="fade-in space-y-6">
+            <div v-if="selected" :key="selected.id" class="fade-in space-y-6 pop-in">
               <div class="flex items-start justify-between">
                 <div>
                   <p class="text-xs uppercase tracking-[0.3em] text-white/60">Selected</p>
@@ -173,13 +155,41 @@
                   {{ selected.category }}
                 </span>
               </div>
-              <img :src="selected.image" :alt="selected.name" class="h-48 w-full rounded-2xl object-cover" />
+              <img :src="selectedImage" :alt="selected.name" class="h-48 w-full rounded-2xl object-cover" />
               <ul class="space-y-3 text-sm text-white/70">
                 <li v-for="detail in selected.details" :key="detail">• {{ detail }}</li>
               </ul>
+              <div class="space-y-3">
+                <p class="text-xs uppercase tracking-[0.3em] text-white/60">Color</p>
+                <div class="flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em]">
+                  <button
+                    v-for="color in selected.colors"
+                    :key="color"
+                    class="rounded-full border px-3 py-2 transition"
+                    :class="selectedColor === color ? 'border-citron text-citron' : 'border-white/10 text-white/70'"
+                    @click="selectedColor = color"
+                  >
+                    {{ color }}
+                  </button>
+                </div>
+              </div>
+              <div v-if="hasStorageOptions" class="space-y-3">
+                <p class="text-xs uppercase tracking-[0.3em] text-white/60">Storage</p>
+                <div class="flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em]">
+                  <button
+                    v-for="(option, index) in selected.storageOptions"
+                    :key="option.size"
+                    class="rounded-full border px-3 py-2 transition"
+                    :class="selectedStorageIndex === index ? 'border-citron text-citron' : 'border-white/10 text-white/70'"
+                    @click="selectedStorageIndex = index"
+                  >
+                    {{ option.size }}GB
+                  </button>
+                </div>
+              </div>
               <div class="rounded-2xl border border-white/10 bg-black/40 p-4">
                 <p class="text-xs uppercase tracking-[0.3em] text-white/60">Starting at</p>
-                <p class="mt-2 text-2xl font-semibold text-citron">{{ selected.price }}</p>
+                <p class="mt-2 text-2xl font-semibold text-citron">{{ selectedPrice }}</p>
               </div>
               <div class="space-y-3">
                 <p class="text-xs uppercase tracking-[0.3em] text-white/60">Card Options</p>
@@ -218,15 +228,25 @@ import macbook from './assets/macbook.svg'
 import ipad from './assets/ipad.svg'
 import airpods from './assets/airpods.svg'
 import watch from './assets/watch.svg'
+import colorBlack from './assets/color-black.svg'
+import colorSilver from './assets/color-silver.svg'
+import colorGold from './assets/color-gold.svg'
+import colorBlue from './assets/color-blue.svg'
+import colorPink from './assets/color-pink.svg'
+import colorGreen from './assets/color-green.svg'
+import colorPurple from './assets/color-purple.svg'
+import colorWhite from './assets/color-white.svg'
 
 type Product = {
   id: number
   name: string
   category: string
-  price: string
+  basePrice: number
   tagline: string
   details: string[]
   image: string
+  colors: string[]
+  storageOptions: { size: number; add: number }[]
 }
 
 type Category = 'iPhone' | 'Mac' | 'iPad' | 'Watch' | 'AirPods'
@@ -241,42 +261,56 @@ const accessLabel = ref('')
 const currentPage = ref<'home' | 'products'>('home')
 const currentCategory = ref<Category>('iPhone')
 
+const storageOptions = [
+  { size: 128, add: 0 },
+  { size: 256, add: 120 },
+  { size: 512, add: 240 },
+]
+
 const iphoneVariants = ref<Product[]>([
   {
     id: 101,
-    name: 'iPhone 6s 16GB',
+    name: 'iPhone 6s',
     category: 'iPhone 6s',
-    price: '$149',
+    basePrice: 149,
     tagline: 'Classic 4.7-inch Retina HD with Touch ID.',
     details: ['4.7-inch Retina HD display', 'A9 chip with M9 motion coprocessor', '12MP rear camera'],
     image: iphone,
+    colors: ['Space Gray', 'Silver', 'Gold', 'Rose Gold'],
+    storageOptions,
   },
   {
     id: 102,
-    name: 'iPhone 6s 32GB',
+    name: 'iPhone 6s Plus',
     category: 'iPhone 6s',
-    price: '$179',
-    tagline: 'More storage for photos, apps, and music.',
-    details: ['32GB storage', 'Live Photos support', 'Fast LTE connectivity'],
+    basePrice: 179,
+    tagline: 'Bigger 5.5-inch screen with optical image stabilization.',
+    details: ['5.5-inch Retina HD display', 'Optical image stabilization', 'Fast LTE connectivity'],
     image: iphone,
+    colors: ['Space Gray', 'Silver', 'Gold'],
+    storageOptions,
   },
   {
     id: 103,
-    name: 'iPhone 6s 64GB',
+    name: 'iPhone SE (1st Gen)',
     category: 'iPhone 6s',
-    price: '$219',
-    tagline: 'Room for every moment and more.',
-    details: ['64GB storage', 'Rose Gold finish', 'Apple Pay with Touch ID'],
+    basePrice: 129,
+    tagline: 'Compact power with the A9 chip.',
+    details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
     image: iphone,
+    colors: ['Silver', 'Space Gray', 'Rose Gold'],
+    storageOptions,
   },
   {
     id: 104,
-    name: 'iPhone 6s 128GB',
+    name: 'iPhone 7',
     category: 'iPhone 6s',
-    price: '$259',
-    tagline: 'Max storage for pro-level workflows.',
-    details: ['128GB storage', '12MP rear + 5MP front cameras', 'iOS 15 ready'],
+    basePrice: 199,
+    tagline: 'Stereo speakers and water resistance.',
+    details: ['Water resistant (IP67)', 'Stereo speakers', '12MP camera'],
     image: iphone,
+    colors: ['Jet Black', 'Black', 'Silver', 'Gold'],
+    storageOptions,
   },
 ])
 
@@ -287,10 +321,46 @@ const catalog = ref<Record<Category, Product[]>>({
       id: 201,
       name: 'MacBook Pro 14"',
       category: 'Mac',
-      price: '$1,999',
+      basePrice: 1999,
       tagline: 'M3 Pro performance in a compact powerhouse.',
       details: ['14.2-inch Liquid Retina XDR', 'M3 Pro chip', 'Up to 18 hours battery life'],
       image: macbook,
+      colors: ['Space Black', 'Silver'],
+      storageOptions: [
+        { size: 512, add: 0 },
+        { size: 1000, add: 200 },
+        { size: 2000, add: 500 },
+      ],
+    },
+    {
+      id: 202,
+      name: 'MacBook Air 13"',
+      category: 'Mac',
+      basePrice: 1099,
+      tagline: 'Ultra-light with all-day battery.',
+      details: ['13.6-inch Liquid Retina', 'M3 chip', 'Up to 18 hours battery life'],
+      image: macbook,
+      colors: ['Midnight', 'Starlight', 'Space Gray', 'Silver'],
+      storageOptions: [
+        { size: 256, add: 0 },
+        { size: 512, add: 200 },
+        { size: 1000, add: 400 },
+      ],
+    },
+    {
+      id: 203,
+      name: 'iMac 24"',
+      category: 'Mac',
+      basePrice: 1299,
+      tagline: 'All-in-one with vibrant 4.5K display.',
+      details: ['24-inch 4.5K Retina', 'M3 chip', 'Studio-quality mics'],
+      image: macbook,
+      colors: ['Blue', 'Green', 'Pink', 'Silver'],
+      storageOptions: [
+        { size: 256, add: 0 },
+        { size: 512, add: 200 },
+        { size: 1000, add: 400 },
+      ],
     },
   ],
   iPad: [
@@ -298,10 +368,46 @@ const catalog = ref<Record<Category, Product[]>>({
       id: 301,
       name: 'iPad Air',
       category: 'iPad',
-      price: '$599',
+      basePrice: 599,
       tagline: 'Slim, light, and ready for everything.',
       details: ['10.9-inch Liquid Retina display', 'M1 chip', 'Apple Pencil support'],
       image: ipad,
+      colors: ['Space Gray', 'Blue', 'Pink', 'Starlight'],
+      storageOptions: [
+        { size: 128, add: 0 },
+        { size: 256, add: 100 },
+        { size: 512, add: 200 },
+      ],
+    },
+    {
+      id: 302,
+      name: 'iPad Pro 11"',
+      category: 'iPad',
+      basePrice: 799,
+      tagline: 'Pro power in a portable size.',
+      details: ['11-inch Liquid Retina', 'M4 chip', 'ProMotion display'],
+      image: ipad,
+      colors: ['Space Black', 'Silver'],
+      storageOptions: [
+        { size: 128, add: 0 },
+        { size: 256, add: 120 },
+        { size: 512, add: 240 },
+      ],
+    },
+    {
+      id: 303,
+      name: 'iPad mini',
+      category: 'iPad',
+      basePrice: 499,
+      tagline: 'Small size. Big capability.',
+      details: ['8.3-inch Liquid Retina', 'A15 Bionic', 'USB-C'],
+      image: ipad,
+      colors: ['Purple', 'Starlight', 'Pink', 'Space Gray'],
+      storageOptions: [
+        { size: 64, add: 0 },
+        { size: 128, add: 100 },
+        { size: 256, add: 200 },
+      ],
     },
   ],
   Watch: [
@@ -309,10 +415,46 @@ const catalog = ref<Record<Category, Product[]>>({
       id: 401,
       name: 'Apple Watch Ultra',
       category: 'Watch',
-      price: '$799',
+      basePrice: 799,
       tagline: 'Adventure-ready with advanced health features.',
       details: ['49mm titanium case', 'Action button', 'Up to 36 hours battery life'],
       image: watch,
+      colors: ['Natural', 'Black'],
+      storageOptions: [
+        { size: 32, add: 0 },
+        { size: 64, add: 80 },
+        { size: 128, add: 160 },
+      ],
+    },
+    {
+      id: 402,
+      name: 'Apple Watch Series 9',
+      category: 'Watch',
+      basePrice: 399,
+      tagline: 'Powerful sensors and a brighter display.',
+      details: ['S9 SiP', 'Double Tap gesture', 'All-day battery'],
+      image: watch,
+      colors: ['Midnight', 'Starlight', 'Silver'],
+      storageOptions: [
+        { size: 32, add: 0 },
+        { size: 64, add: 80 },
+        { size: 128, add: 160 },
+      ],
+    },
+    {
+      id: 403,
+      name: 'Apple Watch SE',
+      category: 'Watch',
+      basePrice: 249,
+      tagline: 'Essential features at a great value.',
+      details: ['Crash Detection', 'Sleep tracking', 'Swimproof'],
+      image: watch,
+      colors: ['Midnight', 'Starlight', 'Silver'],
+      storageOptions: [
+        { size: 32, add: 0 },
+        { size: 64, add: 80 },
+        { size: 128, add: 160 },
+      ],
     },
   ],
   AirPods: [
@@ -320,15 +462,53 @@ const catalog = ref<Record<Category, Product[]>>({
       id: 501,
       name: 'AirPods Pro',
       category: 'AirPods',
-      price: '$249',
+      basePrice: 249,
       tagline: 'Active Noise Cancellation and spatial audio.',
       details: ['Adaptive Transparency', 'Personalized Spatial Audio', 'MagSafe charging case'],
       image: airpods,
+      colors: ['White'],
+      storageOptions: [
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+      ],
+    },
+    {
+      id: 502,
+      name: 'AirPods (3rd Gen)',
+      category: 'AirPods',
+      basePrice: 179,
+      tagline: 'Immersive sound with spatial audio.',
+      details: ['Spatial Audio', 'Sweat and water resistant', 'Lightning charging'],
+      image: airpods,
+      colors: ['White'],
+      storageOptions: [
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+      ],
+    },
+    {
+      id: 503,
+      name: 'AirPods Max',
+      category: 'AirPods',
+      basePrice: 549,
+      tagline: 'High-fidelity audio with premium comfort.',
+      details: ['Active Noise Cancellation', 'Dynamic drivers', 'Digital Crown'],
+      image: airpods,
+      colors: ['Space Gray', 'Silver', 'Green', 'Sky Blue', 'Pink'],
+      storageOptions: [
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+        { size: 0, add: 0 },
+      ],
     },
   ],
 })
 
 const selected = ref<Product | null>(iphoneVariants.value[0])
+const selectedStorageIndex = ref(0)
+const selectedColor = ref(iphoneVariants.value[0]?.colors[0] ?? '')
 
 const statusMessage = computed(() => {
   if (!accessLabel.value) return 'Awaiting your choice.'
@@ -336,6 +516,40 @@ const statusMessage = computed(() => {
 })
 
 const currentList = computed(() => catalog.value[currentCategory.value])
+const hasStorageOptions = computed(() => {
+  if (!selected.value) return false
+  return selected.value.storageOptions.some((option) => option.size > 0)
+})
+const selectedPrice = computed(() => {
+  if (!selected.value) return '$0'
+  const option = selected.value.storageOptions[selectedStorageIndex.value]
+  const add = option ? option.add : 0
+  return formatPrice(selected.value.basePrice + add)
+})
+
+const colorImageMap: Record<string, string> = {
+  'Space Gray': colorBlack,
+  Black: colorBlack,
+  'Jet Black': colorBlack,
+  'Space Black': colorBlack,
+  Midnight: colorBlack,
+  Silver: colorSilver,
+  Starlight: colorSilver,
+  Natural: colorSilver,
+  Gold: colorGold,
+  'Rose Gold': colorGold,
+  Blue: colorBlue,
+  'Sky Blue': colorBlue,
+  Pink: colorPink,
+  Green: colorGreen,
+  Purple: colorPurple,
+  White: colorWhite,
+}
+
+const selectedImage = computed(() => {
+  if (!selected.value) return iphone
+  return colorImageMap[selectedColor.value] ?? selected.value.image
+})
 
 const grantAccess = (label: string) => {
   accessLabel.value = label
@@ -351,10 +565,14 @@ const resetAccess = () => {
   currentPage.value = 'home'
   currentCategory.value = 'iPhone'
   selected.value = iphoneVariants.value[0]
+  selectedStorageIndex.value = 0
+  selectedColor.value = iphoneVariants.value[0]?.colors[0] ?? ''
 }
 
 const selectProduct = (product: Product) => {
   selected.value = product
+  selectedStorageIndex.value = 0
+  selectedColor.value = product.colors[0] ?? ''
 }
 
 const goHome = () => {
@@ -365,5 +583,9 @@ const goToCategory = (category: Category) => {
   currentCategory.value = category
   currentPage.value = 'products'
   selected.value = catalog.value[category][0] ?? null
+  selectedStorageIndex.value = 0
+  selectedColor.value = selected.value?.colors[0] ?? ''
 }
+
+const formatPrice = (value: number) => `$${value.toLocaleString()}`
 </script>
