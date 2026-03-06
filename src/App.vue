@@ -17,60 +17,78 @@
     </header>
 
     <main class="px-6 pb-16 sm:px-10">
-      <section v-if="!hasAccess" class="flex min-h-[70vh] items-center justify-center">
-        <div class="glass fade-in grid w-full max-w-5xl gap-6 rounded-3xl p-8 sm:p-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <h2 class="text-3xl sm:text-4xl font-semibold">Welcome to the Apple vault</h2>
-            <p class="mt-4 text-base text-white/70">
-              Sign in to unlock the product archive, or stay locked out and still explore the lineup.
-              It is your call.
-            </p>
-            <form class="mt-8 space-y-4" @submit.prevent="grantAccess('Signed In')">
-              <label class="block text-sm uppercase tracking-[0.2em] text-white/60">Apple ID</label>
+      <section v-if="!hasAccess" class="login-shell flex min-h-[75vh] items-center justify-center px-4 py-10">
+        <div class="login-card fade-in w-full max-w-3xl rounded-[36px] p-10 text-mist shadow-2xl sm:p-14">
+          <div class="flex items-center gap-5">
+            <div class="login-icon h-16 w-16 rounded-2xl"></div>
+            <div>
+              <p class="text-xs uppercase tracking-[0.45em] text-white/60">Welcome to AppleHut</p>
+              <h2 class="mt-2 text-3xl font-semibold text-white">Sign in with Apple ID</h2>
+            </div>
+          </div>
+
+          <form class="mt-10 space-y-6" @submit.prevent="grantAccess('Signed In')">
+            <div>
+              <label class="block text-sm font-medium text-white/70">Email or Phone</label>
               <input
                 v-model="email"
                 type="email"
                 required
-                placeholder="you@icloud.com"
-                class="w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-base text-white placeholder:text-white/40 focus:border-citron focus:outline-none"
+                placeholder="name@icloud.com"
+                class="mt-3 w-full rounded-2xl border border-white/15 bg-black/30 px-5 py-4 text-base text-white placeholder:text-white/40 focus:border-citron focus:outline-none"
               />
-              <label class="block text-sm uppercase tracking-[0.2em] text-white/60">Password</label>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70">Password</label>
               <input
                 v-model="password"
                 type="password"
                 required
                 placeholder="••••••••"
-                class="w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-base text-white placeholder:text-white/40 focus:border-citron focus:outline-none"
+                class="mt-3 w-full rounded-2xl border border-white/15 bg-black/30 px-5 py-4 text-base text-white placeholder:text-white/40 focus:border-citron focus:outline-none"
               />
-              <button
-                type="submit"
-                class="w-full rounded-2xl bg-citron px-5 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-ink transition hover:shadow-glow"
-              >
-                Sign In
-              </button>
-            </form>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 text-sm text-white/60">
+              <label class="flex items-center gap-3">
+                <input type="checkbox" class="h-4 w-4 rounded border-white/30 text-citron" />
+                Keep me signed in
+              </label>
+              <button type="button" class="font-semibold text-white">Forgot password?</button>
+            </div>
+
             <button
-              class="mt-4 w-full rounded-2xl border border-white/20 px-5 py-3 text-sm uppercase tracking-[0.3em] text-white/70 transition hover:border-citron/80 hover:text-citron"
+              type="submit"
+              class="mt-2 w-full rounded-2xl bg-citron px-5 py-4 text-base font-semibold text-ink shadow-lg transition hover:translate-y-[-1px]"
+            >
+              Sign In
+            </button>
+          </form>
+
+          <div class="my-8 flex items-center gap-4 text-sm text-white/40">
+            <span class="h-px flex-1 bg-white/15"></span>
+            or
+            <span class="h-px flex-1 bg-white/15"></span>
+          </div>
+
+          <div class="space-y-3">
+            <button class="w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-base font-medium text-white transition hover:border-citron/70">
+              Continue with Face ID
+            </button>
+            <button class="w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-base font-medium text-white transition hover:border-citron/70">
+              Create Apple ID
+            </button>
+            <button
+              class="w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-base font-medium text-white transition hover:border-citron/70"
               @click="grantAccess('Stayed Locked Out')"
             >
-              Stay Locked Out
+              Stay Logged Out
             </button>
           </div>
-          <div class="flex flex-col justify-between gap-6">
-            <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/80 via-black/60 to-slate-950/90 p-6">
-              <p class="text-sm uppercase tracking-[0.3em] text-white/50">Preview</p>
-              <h3 class="mt-4 text-2xl font-semibold">Today&apos;s featured lineup</h3>
-              <p class="mt-3 text-sm text-white/60">
-                iPhone, MacBook Pro, iPad Air, AirPods Pro, and Apple Watch. Tap in to see the details
-                for each product.
-              </p>
-            </div>
-            <div class="rounded-3xl border border-white/10 bg-black/40 p-6">
-              <p class="text-xs uppercase tracking-[0.3em] text-white/50">Status</p>
-              <p class="mt-3 text-lg">{{ statusMessage }}</p>
-              <p class="mt-2 text-sm text-white/60">We do not store any data. This is a visual demo.</p>
-            </div>
-          </div>
+
+          <p class="mt-8 text-sm text-white/60">
+            New to Apple? Create an Apple ID to get started with iCloud, App Store, and more.
+          </p>
         </div>
       </section>
 
