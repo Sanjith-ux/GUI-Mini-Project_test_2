@@ -122,7 +122,7 @@
             :key="currentPage"
             :src="homeHero"
             alt="iPhone lineup"
-            class="h-96 w-96 rounded-3xl object-cover shadow-2xl pop-in"
+            class="h-96 w-130 rounded-3xl object-cover shadow-2xl pop-in"
           />
         </div>
 
@@ -147,7 +147,7 @@
                 class="glass group flex flex-col overflow-hidden rounded-3xl p-5 transition hover:-translate-y-1 hover:border-citron/40"
                 @click="selectProduct(product)"
               >
-                <img :src="product.image" :alt="product.name" class="h-44 w-full rounded-2xl object-cover" />
+                <img :src="product.image" :alt="product.name" class="h-45 w-full rounded-2xl object-cover" />
                 <div class="mt-4 flex items-center justify-between">
                   <h3 class="text-lg font-semibold">{{ product.name }}</h3>
                   <span class="text-xs uppercase tracking-[0.2em] text-white/50">{{ product.category }}</span>
@@ -173,7 +173,7 @@
                   {{ selected.category }}
                 </span>
               </div>
-              <img :src="selectedImage" :alt="selected.name" class="h-48 w-full rounded-2xl object-cover" />
+              <img :src="selectedImage" :alt="selected.name" class="h-49 w-full rounded-2xl object-cover" />
               <ul class="space-y-3 text-sm text-white/70">
                 <li v-for="detail in selected.details" :key="detail">• {{ detail }}</li>
               </ul>
@@ -242,14 +242,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import iphone from './assets/iphone 17 pro max.webp'
+import iphone17 from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/Apple-iPhone-17-blue.webp'
+import iphoneAir from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/Apple-iPhone-Air_blue.webp'
+import iphone16Promax from './assets/Iphone_16_Pro_Max_gold.jpg'
+import iphone16 from './assets/iPhone-16-Blue.jpg'
+import iphone15ProMax from './assets/iPhone-15-Pro-Max-Nauural_tiatanium.jpg'
+import iphone15 from './assets/Apple-iphone-15-blue.jpg'
+import iphone14ProMax from './assets/Apple-iPhone-14-Pro-Max-Purple.png'
+import iphone14 from './assets/Apple-iPhone-14-1purple.png'
 import homeHero from './assets/iPhone-17-and-17-Pro-colors-here-are-all-the-official-hues.jpg'
 import macbook from './assets/macbook.svg'
 import ipad from './assets/ipad.svg'
 import airpods from './assets/airpods.svg'
 import watch from './assets/watch.svg'
 import iphone17CosmicOrange from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/iPhone_17_Pro_Max_Cosmic_Orange_PDP_Image_Position_1_Cosmic_Orange_newavif.avif'
-import iphone17DeepBlue from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/iPhone_17_Pro_Max_Deep_Blue_new.webp'
-import iphone17Silver from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/iPhone_17_Pro_Max_Silver_new.webp'
+import iphone17DeepBlue from './assets/iPhone_17_Pro_Max_Deep_Blue_new.webp'
+import iphone17Silver from './assets/iPhone_17_Pro_Max_Silver_new.webp'
+import iphone17MaxCosmicOrange from '/Users/sanjithab/Desktop/GUI Mini Project_test_2/src/assets/iPhone_17_Pro_Max_Cosmic_Orange_PDP_Image_Position_1_Cosmic_Orange_newavif.avif'
+import iphone17MaxDeepBlue from './assets/Iphone_17_pro_max_deepBlue.webp'
+import iphone17MaxSilver from './assets/17_pro_Max_Silver.webp'
 import colorBlack from './assets/color-black.svg'
 import colorSilver from './assets/color-silver.svg'
 import colorGold from './assets/color-gold.svg'
@@ -293,7 +304,7 @@ const iphoneVariants = ref<Product[]>([
   {
     id: 101,
     name: 'iPhone 17 Por Max',
-    category: 'iPhone 17',
+    category: 'iPhone 17 series',
     basePrice: 149,
     tagline: 'Classic 4.7-inch Retina HD with Touch ID.',
     details: ['4.7-inch Retina HD display', 'A9 chip with M9 motion coprocessor', '12MP rear camera'],
@@ -304,22 +315,22 @@ const iphoneVariants = ref<Product[]>([
   {
     id: 102,
     name: 'iPhone  17 Pro',
-    category: 'iPhone 17',
+    category: 'iPhone 17 series',
     basePrice: 179,
     tagline: 'Bigger 5.5-inch screen with optical image stabilization.',
     details: ['5.5-inch Retina HD display', 'Optical image stabilization', 'Fast LTE connectivity'],
     image: iphone,
-    colors: ['Space Gray', 'Silver', 'Gold'],
+    colors: ['Cosmic Orange', 'Deep Blue','Silver'],
     storageOptions,
   },
   {
     id: 103,
     name: 'iPhone 17',
-    category: 'iPhone 17',
+    category: 'iPhone 17 series',
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone17,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -330,7 +341,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 199,
     tagline: 'Stereo speakers and water resistance.',
     details: ['Water resistant (IP67)', 'Stereo speakers', '12MP camera'],
-    image: iphone,
+    image: iphoneAir,
     colors: ['Jet Black', 'Black', 'Silver', 'Gold'],
     storageOptions,
   },
@@ -341,7 +352,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone16Promax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -352,7 +363,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone16Promax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -363,7 +374,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone16,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -374,7 +385,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone15ProMax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -385,7 +396,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone15ProMax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -396,7 +407,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone15,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -407,7 +418,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone14ProMax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -418,7 +429,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone14ProMax,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -429,7 +440,7 @@ const iphoneVariants = ref<Product[]>([
     basePrice: 129,
     tagline: 'Compact power with the A9 chip.',
     details: ['4-inch Retina display', 'A9 chip', 'Apple Pay with Touch ID'],
-    image: iphone,
+    image: iphone14,
     colors: ['Silver', 'Space Gray', 'Rose Gold'],
     storageOptions,
   },
@@ -665,10 +676,16 @@ const colorImageMap: Record<string, string> = {
 
 const selectedImage = computed(() => {
   if (!selected.value) return iphone
-  const isIphone17Max =
-    selected.value.category === 'iPhone 17' &&
-    selected.value.name.toLowerCase().includes('max')
+  const name = selected.value.name.toLowerCase()
+  const isIphone17 = selected.value.category.toLowerCase().includes('iphone 17')
+  const isIphone17Max = isIphone17 && name.includes('max')
   if (isIphone17Max) {
+    if (selectedColor.value === 'Cosmic Orange') return iphone17MaxCosmicOrange
+    if (selectedColor.value === 'Deep Blue') return iphone17MaxDeepBlue
+    if (selectedColor.value === 'Silver') return iphone17MaxSilver
+  }
+  const isIphone17Pro = isIphone17 && name.includes('pro') && !name.includes('max')
+  if (isIphone17Pro) {
     if (selectedColor.value === 'Cosmic Orange') return iphone17CosmicOrange
     if (selectedColor.value === 'Deep Blue') return iphone17DeepBlue
     if (selectedColor.value === 'Silver') return iphone17Silver
